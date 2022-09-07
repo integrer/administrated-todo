@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "strict": true,
+    "strictNullChecks": true,
+    "noStrictGenericChecks": false,
+    "baseUrl": "./",
+    "paths": {
+      "@app/*": ["src/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "references": [
+    { "path": "tsconfig.webpackCfg.json" }
+  ]
+}

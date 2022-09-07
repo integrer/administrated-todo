@@ -3,10 +3,97 @@
   "version": "0.0.1",
   "description": "Fullstack todo app for test",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "engines": {
+    "node": "16"
   },
-  "keywords": ["todo", "study", "backend", "frontend"],
+  "scripts": {
+    "build": "concurrently \"npm run build:server\" \"npm run build:client\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\"",
+    "build:client": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.webpackCfg.json\" webpack --mode production",
+    "build:server": "tsc -b src/server",
+    "clean": "rimraf dist",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\"",
+    "dev:client": "cross-env TS_NODE_PROJECT=\"tsconfig.webpackCfg.json\" webpack serve",
+    "dev:server": "tsc-watch --noClear -b ./src/server/tsconfig.json --onSuccess \"node --enable-source-maps index.js\"",
+    "lint": "eslint 'src/**/*.{j,t}s{,x}'",
+    "prepare": "husky install",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "type-check": "tsc --pretty --noEmit -p ./src/client && tsc --pretty --noEmit -p ./src/server && tsc --pretty --noEmit -p ./src/shared && tsc --pretty --noEmit -p ./tsconfig.webpackCfg.json"
+  },
+  "keywords": [
+    "todo",
+    "study",
+    "backend",
+    "frontend"
+  ],
   "author": "Nikita Bibik <osbib2@gmail.com> (https://www.facebook.com/Nikita.Bibik/)",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.2",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "ramda": "^0.28.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.0",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-decorators": "^7.19.0",
+    "@babel/plugin-transform-runtime": "^7.18.10",
+    "@babel/preset-env": "^7.19.0",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/icons-material": "^5.10.3",
+    "@mui/material": "^5.10.4",
+    "@types/cssnano": "^5.1.0",
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.7.15",
+    "@types/ramda": "^0.28.15",
+    "@types/react": "^17.0.49",
+    "@types/react-dom": "^17.0.17",
+    "@types/webpack-bundle-analyzer": "^4.4.2",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
+    "babel-loader": "^8.2.5",
+    "concurrently": "^7.4.0",
+    "core-js": "^3.25.0",
+    "css-loader": "^6.7.1",
+    "cssnano": "^5.1.13",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.7",
+    "file-loader": "^6.2.0",
+    "http-proxy-middleware": "^2.0.6",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "postcss-loader": "^7.0.1",
+    "prettier": "^2.7.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0",
+    "rimraf": "^3.0.2",
+    "style-loader": "^3.3.1",
+    "ts-node": "^10.4.0",
+    "tsc-watch": "^4.5.0",
+    "tsconfig-paths": "^3.12.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.8.2",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.74.0",
+    "webpack-bundle-analyzer": "^4.6.1",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.0",
+    "webpack-manifest-plugin": "^5.0.0"
+  },
+  "lint-staged": {
+    "*.{j,t}s{,x}": [
+      "prettier --write",
+      "eslint"
+    ]
+  }
 }
