@@ -18,7 +18,7 @@
     "migrate": "node-pg-migrate",
     "prepare": "husky install",
     "start": "cross-env NODE_ENV=production node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "type-check": "tsc --pretty --noEmit -p ./src/client && tsc --pretty --noEmit -p ./src/server && tsc --pretty --noEmit -p ./src/shared && tsc --pretty --noEmit -p ./tsconfig.webpackCfg.json"
   },
   "keywords": [
@@ -30,13 +30,17 @@
   "author": "Nikita Bibik <osbib2@gmail.com> (https://www.facebook.com/Nikita.Bibik/)",
   "license": "Apache-2.0",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
+    "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.2",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
+    "module-alias": "^2.2.2",
     "pg": "^8.8.0",
-    "ramda": "^0.28.0"
+    "ramda": "^0.28.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.19.0",
@@ -50,8 +54,12 @@
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.4",
+    "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.3",
     "@types/cssnano": "^5.1.0",
     "@types/express": "^4.17.13",
+    "@types/jest": "^29.0.1",
+    "@types/module-alias": "^2.0.1",
     "@types/node": "^18.7.15",
     "@types/pg": "^8.6.5",
     "@types/pg-format": "^1.0.2",
@@ -73,6 +81,7 @@
     "file-loader": "^6.2.0",
     "http-proxy-middleware": "^2.0.6",
     "husky": "^8.0.1",
+    "jest": "^29.0.3",
     "lint-staged": "^13.0.3",
     "node-pg-migrate": "^6.2.2",
     "pg-format": "^1.0.4",
@@ -84,6 +93,7 @@
     "react-router-dom": "^6.3.0",
     "rimraf": "^3.0.2",
     "style-loader": "^3.3.1",
+    "ts-jest": "^29.0.0",
     "ts-node": "^10.4.0",
     "tsc-watch": "^4.5.0",
     "tsconfig-paths": "^3.12.0",
@@ -100,6 +110,11 @@
     "*.{j,t}s{,x}": [
       "prettier --write",
       "eslint"
+    ]
+  },
+  "jest": {
+    "projects": [
+      "src/server/unit.jest.config.ts"
     ]
   }
 }

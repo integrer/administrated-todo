@@ -9,6 +9,7 @@ exports.up = (pgm) => {
     password: { type: 'varchar(255)', notNull: true },
     is_admin: { type: 'boolean', notNull: true, default: false },
   });
+  pgm.createIndex('users', 'login', { unique: true })
 
   pgm.createTable('sessions', {
     id: { type: 'char(32)', primaryKey: true },
