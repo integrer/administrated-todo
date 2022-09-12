@@ -2,7 +2,8 @@ import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
 import { promisify } from 'util';
 import { ClientBase } from 'pg';
-import { Request } from 'express';
+import { Request, Response } from 'express';
+import { transaction } from '@app/server/db';
 import { getInsertValuesPlaceholder } from '@app/server/db/query-utils';
 import { HTTPStatusCode } from '@app/server/utils/HTTPStatusCode';
 
@@ -124,6 +125,24 @@ FROM sessions JOIN users ON sessions.user_id = users.id WHERE sessions.id = $1 A
   }
 }
 
-export function parseAuthToken(req: Request): string | undefined {
+type RequestLike = Pick<Request, 'cookies' | 'header'>;
+
+export function parseAuthToken(req: RequestLike): string | undefined {
   return req.cookies.token || req.header('authorization')?.split(' ')[1];
+}
+
+export function permissionMiddleware(isAllowed?: (account: IUserRow) => boolean | PromiseLike<boolean>) {
+  const allowedTo = isAllowed || (() => true);
+  return async function checkPermission(req: RequestLike, res: Pick<Response, 'sendStatus'>, next: () => void) {
+    try {
+      const authToken = parseAuthToken(req);
+      if (!authToken) return res.sendStatus(HTTPStatusCode.Unauthorized);
+      const account = await transaction((client) => new PGUsersService(client).findByToken(authToken));
+      if (!account) return res.sendStatus(HTTPStatusCode.Unauthorized);
+      if (await allowedTo(account)) return next();
+      res.sendStatus(HTTPStatusCode.Forbidden);
+    } catch (e) {
+      res.sendStatus(HTTPStatusCode.InternalServerError);
+    }
+  };
 }
