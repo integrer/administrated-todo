@@ -7,20 +7,20 @@ import { apiRouter } from './routes/api-router';
 import { pagesRouter } from './routes/pages-router';
 import { staticsRouter } from './routes/statics-router';
 
-const delim = '*'.repeat(38);
-console.log(delim);
-console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-console.log(`config: ${JSON.stringify(config, null, 2)}`);
-console.log(delim);
+(async () => {
+  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+  console.log(`config: ${JSON.stringify(config, null, 2)}`);
 
-const app = express();
-app.set('view engine', 'ejs');
+  if (!globalThis.fetch) require('cross-fetch/polyfill');
+  const app = express();
+  app.set('view engine', 'ejs');
 
-app.use('/assets', express.static(path.join(process.cwd(), 'assets')));
-app.use('/api', apiRouter());
-app.use(staticsRouter());
-app.use(pagesRouter());
+  app.use('/assets', express.static(path.join(process.cwd(), 'assets')));
+  app.use('/api', apiRouter());
+  app.use('/statics', await staticsRouter());
+  app.use(pagesRouter());
 
-app.listen(config.SERVER_PORT, () => {
-  console.log(`App listening on port ${config.SERVER_PORT}!`);
-});
+  app.listen(config.SERVER_PORT, () => {
+    console.log(`App listening on port ${config.SERVER_PORT}!`);
+  });
+})();
