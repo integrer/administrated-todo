@@ -39,7 +39,11 @@ export function TodoCard({ model }: ITodoCardProps) {
           </Box>
           <Stack>
             <Typography variant='h5' component='div'>
-              {model.username} &lt;<Link href={`mailto:${model.email}`}>{model.email}</Link>&gt;
+              {model.username} &lt;
+              <Link component='a' href={`mailto:${model.email}`}>
+                {model.email}
+              </Link>
+              &gt;
             </Typography>
             <Link href={`/${model.id}`}>
               <Typography sx={{ mb: '0.75rem' }} color='text.secondary'>
