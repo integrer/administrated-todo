@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { userRouter, todoRouter } from './api-routes';
 import cookieParser from 'cookie-parser';
-import { HTTPStatusCode } from '@app/server/utils/HTTPStatusCode';
+import { HTTPStatusCode } from '@app/shared/utils/rest';
 
 export function apiRouter() {
   const router = Router();

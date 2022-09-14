@@ -6,7 +6,7 @@ import { oneOfOr } from '@app/shared/utils/oneOf';
 import { transaction } from '@app/server/db';
 import { todoListOrderTypes } from '@app/shared/features/todos/todoListOrderTypes';
 import { ITodoListParams } from '@app/shared/features/todos/ITodoListParams';
-import { HTTPStatusCode } from '@app/server/utils/HTTPStatusCode';
+import { HTTPStatusCode } from '@app/shared/utils/rest';
 import { permissionMiddleware } from '@app/server/services/users-service';
 import { todoCreateFormSchema, todoUpdateFormSchema } from '@app/shared/features/todos';
 import { ValidationError } from 'yup';

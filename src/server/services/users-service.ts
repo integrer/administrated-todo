@@ -5,7 +5,8 @@ import { ClientBase } from 'pg';
 import { Request, Response } from 'express';
 import { transaction } from '@app/server/db';
 import { getInsertValuesPlaceholder } from '@app/server/db/query-utils';
-import { HTTPStatusCode } from '@app/server/utils/HTTPStatusCode';
+import { HTTPStatusCode } from '@app/shared/utils/rest';
+import { IUserCredentials } from '@app/shared/features/users';
 
 const randomBytes = promisify(crypto.randomBytes);
 const defaultExpiresIn = 3600;
@@ -13,11 +14,6 @@ const getExpiresIn = () => {
   const expiresIn = process.env.EXPIRES_IN;
   return (expiresIn && +expiresIn) || defaultExpiresIn;
 };
-
-export interface IUserCredentials {
-  login: string;
-  password: string;
-}
 
 export interface IUserAdditionalData {
   isAdmin: boolean;

@@ -5,7 +5,7 @@ import { transaction } from '@app/server/db';
 import { PGUsersService, parseAuthToken, NoSuchUserError } from '@app/server/services/users-service';
 import { userCredentialsSchema, IUserDTO } from '@app/shared/features/users';
 import { pick } from 'ramda';
-import { HTTPStatusCode } from '@app/server/utils/HTTPStatusCode';
+import { HTTPStatusCode } from '@app/shared/utils/rest';
 
 export function userRouter() {
   const router = Router();
@@ -24,7 +24,8 @@ export function userRouter() {
       res.status(HTTPStatusCode.OK).cookie('token', token, { httpOnly: true, expires: expiresAt }).json(loginResult);
     } catch (err) {
       if (err instanceof NoSuchUserError) return res.sendStatus(HTTPStatusCode.NotFound);
-      if (ValidationError.isError(err)) return res.status(HTTPStatusCode.UnprocessableEntity).json({ errors: err.errors });
+      if (ValidationError.isError(err))
+        return res.status(HTTPStatusCode.UnprocessableEntity).json({ errors: err.errors });
       res.sendStatus(HTTPStatusCode.InternalServerError);
     }
   });
