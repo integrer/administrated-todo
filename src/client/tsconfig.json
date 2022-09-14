@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "outDir": "../../dist/client",
     "lib": ["ES2019", "DOM"],
-    "types": [],
+    "types": ["node"],
     "jsx": "react",
     "composite": true
   },
