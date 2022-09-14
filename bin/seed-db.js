@@ -1,8 +1,10 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 const tsConfig = require('../src/server/tsconfig.json');
 require('ts-node').register(tsConfig);
-const { tableSeeder, transaction } = require('../src/server/db');
+const { transaction } = require('../src/server/db');
+const { tableSeeder } = require('../src/server/db/seed');
 const { PGUsersService } = require('../src/server/services/users-service');
 
 const seedData = [
@@ -25,7 +27,10 @@ transaction(async (client) => {
     const seedTable = tableSeeder(client);
     const usersSvc = new PGUsersService(client);
     await usersSvc.createUsersUnsafe(usersData);
-    await seedData.reduce((prevPromise, tableData) => prevPromise.then(() => seedTable(...tableData)), Promise.resolve());
+    await seedData.reduce(
+      (prevPromise, tableData) => prevPromise.then(() => seedTable(...tableData)),
+      Promise.resolve(),
+    );
   } catch (e) {
     console.error(e);
     throw e;
