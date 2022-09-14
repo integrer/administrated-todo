@@ -1,26 +1,13 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
-import { isNaN, parseNumber } from '@app/shared/utils/number';
+import { isNaN } from '@app/shared/utils/number';
 import { PGTodoDAO } from '@app/server/dao/todos';
-import { oneOfOr } from '@app/shared/utils/oneOf';
 import { transaction } from '@app/server/db';
-import { todoListOrderTypes } from '@app/shared/features/todos/todoListOrderTypes';
-import { ITodoListParams } from '@app/shared/features/todos/ITodoListParams';
 import { HTTPStatusCode } from '@app/shared/utils/rest';
 import { permissionMiddleware } from '@app/server/services/users-service';
-import { todoCreateFormSchema, todoUpdateFormSchema } from '@app/shared/features/todos';
+import { todoCreateFormSchema, todoUpdateFormSchema, parseTodoListParams } from '@app/shared/features/todos';
 import { ValidationError } from 'yup';
 import sanitize from 'sanitize-html';
-
-const todoListOrderTypeOr = oneOfOr(...todoListOrderTypes);
-
-const parsePageParams = (params: NodeJS.ReadOnlyDict<unknown>): ITodoListParams => ({
-  page: parseNumber(params.page, 1, 1),
-  pages: parseNumber(params.pages, 1, 1),
-  perPage: parseNumber(params.perPage, 3, 0),
-  orderBy: todoListOrderTypeOr(params.orderBy, 'username'),
-  desc: Boolean(params.desc),
-});
 
 const requiresAdminPermission = permissionMiddleware((acc) => acc.isAdmin);
 
@@ -32,7 +19,7 @@ export function todoRouter() {
 
   router.get('/', async function getTodoIndex(req, res) {
     try {
-      const params = parsePageParams(req.query);
+      const params = parseTodoListParams(req.query);
       const data = await transaction((client) => new PGTodoDAO(client).getIndex(params));
       res.status(HTTPStatusCode.OK).json(data);
     } catch (e) {

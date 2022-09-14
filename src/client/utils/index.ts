@@ -1,0 +1,1 @@
+export { useShallowStableValue } from './useShallowStableValue';

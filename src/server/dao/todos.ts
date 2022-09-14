@@ -5,8 +5,8 @@ import { ITodoRecord } from '@app/shared/features/todos/ITodoRecord';
 import { ITodoListParams } from '@app/shared/features/todos/ITodoListParams';
 import { ITodoCreateFormData, ITodoUpdateFormData } from '@app/shared/features/todos';
 
-const getLimitParams = ({ page, pages, perPage }: IPageParams): Required<ILimitParams> => ({
-  limit: pages * perPage,
+const getLimitParams = ({ page, perPage }: { page: number; perPage: number }): Required<ILimitParams> => ({
+  limit: perPage,
   offset: (page - 1) * perPage,
 });
 
@@ -31,14 +31,14 @@ export class PGTodoDAO implements ITodoDAO {
     );
     const total = +record.total;
     const lastPage = Math.ceil(total / params.perPage);
-    return { currentPage: params.page, currentPages: params.pages, total, lastPage };
+    return { currentPage: Math.min(params.page, lastPage), total, lastPage };
   }
 
   async getIndex(params: ITodoListParams): Promise<IPagedMessage<ITodoRecord>> {
-    const limitParams = getLimitParams(params);
-    const fetchingMeta = this._getIndexMeta(params);
+    const meta = await this._getIndexMeta(params);
+    const limitParams = getLimitParams({ ...params, page: meta.currentPage });
 
-    if (limitParams.limit === 0) return { data: [], meta: await fetchingMeta };
+    if (limitParams.limit === 0) return { data: [], meta };
 
     const limitClause = getLimitClause(limitParams);
     const { rows: data } = await this._client.query<ITodoRecord>(
@@ -47,7 +47,7 @@ export class PGTodoDAO implements ITodoDAO {
         [params.orderBy, params.desc && 'DESC', limitClause].filter(Boolean).join(' '),
     );
 
-    return { data, meta: await fetchingMeta };
+    return { data, meta };
   }
 
   async getById(id: number): Promise<ITodoRecord | undefined> {
