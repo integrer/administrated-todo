@@ -1,16 +1,17 @@
 import path from 'path';
 import { Configuration } from 'webpack';
-import 'webpack-dev-server'
+import 'webpack-dev-server';
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import cssnano from 'cssnano';
 
+// noinspection ES6PreferShortImport
 import { IS_DEV, WEBPACK_PORT } from './src/server/config';
 
 const stableChunksRegEx = /^(main|vendors|material-ui)\.js$/;
 const plugins = [
   new WebpackManifestPlugin({ filter: (file) => stableChunksRegEx.test(file.name) }),
-  ...(IS_DEV ? [new BundleAnalyzerPlugin()] : []),
+  // new BundleAnalyzerPlugin(),
 ];
 
 const targets = IS_DEV ? 'last 2 Firefox versions, last 2 Chrome versions, last 2 Edge versions' : '> 0.25%, not dead';
@@ -27,7 +28,7 @@ const config: Configuration = {
   },
   resolve: {
     alias: {
-      "@app": path.resolve(__dirname, 'src'),
+      '@app': path.resolve(__dirname, 'src'),
     },
     extensions: ['.js', '.ts', '.tsx'],
   },
@@ -102,7 +103,7 @@ const config: Configuration = {
       },
     ],
   },
-  ...(IS_DEV ? { devServer: { port: WEBPACK_PORT, open: true } } : null),
+  ...(IS_DEV ? { devServer: { port: WEBPACK_PORT, open: false } } : null),
   plugins,
 };
 
