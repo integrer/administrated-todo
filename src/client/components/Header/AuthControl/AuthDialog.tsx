@@ -2,6 +2,7 @@ import React from 'react';
 import { IUserCredentials, userCredentialsSchema } from '@app/shared/features/users';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormHelperText, TextField } from '@mui/material';
 import { useFormik } from 'formik';
+import { createGetFieldError } from '@app/client/utils/form';
 
 interface IAuthDialogProps {
   open: boolean;
@@ -26,12 +27,9 @@ export function AuthDialog(props: IAuthDialogProps) {
     formikBag.resetForm();
   }
 
-  const { getFieldProps, getFieldMeta } = formikBag;
+  const { getFieldProps } = formikBag;
 
-  const getFieldError = (key: string) => {
-    const fieldMeta = getFieldMeta(key);
-    return fieldMeta.touched ? fieldMeta.error : undefined;
-  };
+  const getFieldError = createGetFieldError(formikBag.getFieldMeta);
 
   return (
     <Dialog open={open} onClose={onCloseClick}>
